@@ -1,5 +1,5 @@
-var express = require('express');
-var bodyParser = require('body-parser');
+const express = require('express');
+const bodyParser = require('body-parser');
 
 // ES6 way of destructuring an object and creating a var
 // that matches an object property with similar a name
@@ -16,11 +16,12 @@ var {
 } = require('./models/user');
 
 
-app = express();
+var app = express();
 // parse request's json body into an object prior to passing
 // to route handler
 app.use(bodyParser.json());
 
+// POST todos
 app.post('/todos', (req, res) => {
   var todo = new Todo({
     text: req.body.text
@@ -37,3 +38,8 @@ app.post('/todos', (req, res) => {
 app.listen(3000, () => {
   console.log('Started server on port 3000');
 });
+
+// exports app
+module.exports = {
+  app
+};
