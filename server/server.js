@@ -23,8 +23,11 @@ app.use(bodyParser.json());
 
 // GET todos
 app.get('/todos', (req, res) => {
-  Todo.find().then((documents) => {
-    res.send(documents);
+  Todo.find().then((todos) => {
+    // ES6 syntax for {todos: todos}
+    res.send({
+      todos
+    });
   }, (e) => {
     res.status(400).send(e);
   });
