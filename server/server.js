@@ -21,6 +21,15 @@ var app = express();
 // to route handler
 app.use(bodyParser.json());
 
+// GET todos
+app.get('/todos', (req, res) => {
+  Todo.find().then((documents) => {
+    res.send(documents);
+  }, (e) => {
+    res.status(400).send(e);
+  });
+});
+
 // POST todos
 app.post('/todos', (req, res) => {
   var todo = new Todo({
@@ -28,7 +37,7 @@ app.post('/todos', (req, res) => {
   });
 
   todo.save().then((todo) => {
-    res.send(todo)
+    res.send(todo);
   }, (e) => {
     res.status(400).send(e);
   });
