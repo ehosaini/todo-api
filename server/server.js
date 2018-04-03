@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 
+
 // ES6 way of destructuring an object and creating a var
 // that matches an object property with similar a name
 var {
@@ -14,6 +15,12 @@ var {
 var {
   User
 } = require('./models/user');
+
+// mongodb driver utility
+var {
+  ObjectID
+} = require('mongodb');
+
 
 
 var app = express();
@@ -31,6 +38,28 @@ app.get('/todos', (req, res) => {
   }, (e) => {
     res.status(400).send(e);
   });
+});
+
+// GET an specific todo
+app.get('/todos/:id', (req, res) => {
+
+  var id = req.params.id;
+
+  if (!ObjectID.isValid(id)) {
+    return res.status(400).send({
+      error: 'ID is not valid'
+    });
+  }
+
+  Todo.findById(id).then((todo) => {
+    if (!todo) {
+      res.status(404).send();
+    }
+    res.send({
+      todo
+    });
+  }).catch((e) => res.status(400).send());
+
 });
 
 // POST todos
@@ -51,7 +80,7 @@ app.listen(3000, () => {
   console.log('Started server on port 3000');
 });
 
-// exports app
+// exports app for use in the test modules
 module.exports = {
   app
 };
