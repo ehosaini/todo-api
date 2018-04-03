@@ -1,5 +1,8 @@
 const expect = require('expect');
 const request = require('supertest');
+const {
+  ObjectID
+} = require('mongodb');
 
 const {
   app
@@ -10,8 +13,10 @@ const {
 
 // dummy seed Todos
 const todos = [{
+  _id: new ObjectID(),
   text: 'first test todo'
 }, {
+  _id: new ObjectID(),
   text: 'second test todo'
 }]
 
@@ -71,7 +76,7 @@ describe('POST Todos', () => {
   });
 });
 
-describe('GET todos', () => {
+describe('GET /todos', () => {
   it('should get all todos', (done) => {
     request(app)
       .get('/todos')
@@ -80,14 +85,42 @@ describe('GET todos', () => {
         expect(res.body.todos.length).toBe(2);
       })
       .end(done);
-    // .end((err, res) => {
-    //   if (err) {
-    //     return done(err);
-    //   }
-    //   Todo.count().then((todos) => {
-    //     expect(todos).toBe(2);
-    //   }).catch((e) => done(e));
-    //   done();
-    // })
   })
-})
+});
+
+describe('GET /todos/:id', () => {
+  it('should return a todo doc', (done) => {
+    // convert the object id to string
+    var id = todos[0]._id.toHexString();
+
+    request(app)
+      .get(`/todos/${id}`)
+      .expect(200)
+      .expect((res) => {
+        expect(res.body.todo.text).toBe(todos[0].text);
+      })
+      .end(done);
+  });
+
+  it('should return 400 if todo not found', (done) => {
+    // increment the first letter of the id by 1
+    // to make a non-existent id; long methods
+    // var id = todos[0]._id.toHexString();
+    // var firstLetter = parseInt(id.slice(0, 1));
+    // var nonExistentId = (firstLetter + 1) + id.slice(1);
+    // Short correct method
+    var nonExistentId = new ObjectID().toHexString();
+
+    request(app)
+      .get(`/todos/${nonExistentId}`)
+      .expect(404)
+      .end(done)
+  });
+
+  it('should return 404 for non-object ids', (done) => {
+    request(app)
+      .get('/todos/123')
+      .expect(400)
+      .end(done);
+  })
+});
