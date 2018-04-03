@@ -24,6 +24,8 @@ var {
 
 
 var app = express();
+const port = process.env.PORT || 3000;
+
 // parse request's json body into an object prior to passing
 // to route handler
 app.use(bodyParser.json());
@@ -76,8 +78,8 @@ app.post('/todos', (req, res) => {
 
 });
 
-app.listen(3000, () => {
-  console.log('Started server on port 3000');
+app.listen(port, () => {
+  console.log(`Started server on port ${port}`);
 });
 
 // exports app for use in the test modules

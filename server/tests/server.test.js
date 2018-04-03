@@ -103,12 +103,6 @@ describe('GET /todos/:id', () => {
   });
 
   it('should return 400 if todo not found', (done) => {
-    // increment the first letter of the id by 1
-    // to make a non-existent id; long methods
-    // var id = todos[0]._id.toHexString();
-    // var firstLetter = parseInt(id.slice(0, 1));
-    // var nonExistentId = (firstLetter + 1) + id.slice(1);
-    // Short correct method
     var nonExistentId = new ObjectID().toHexString();
 
     request(app)
