@@ -42,7 +42,7 @@ app.get('/todos', (req, res) => {
   });
 });
 
-// GET an specific todo
+// GET a specific todo
 app.get('/todos/:id', (req, res) => {
 
   var id = req.params.id;
@@ -77,6 +77,29 @@ app.post('/todos', (req, res) => {
   });
 
 });
+
+// DELETE todos
+app.delete('/todos/:id', (req, res) => {
+  var todoID = req.params.id;
+  if (!ObjectID.isValid(todoID)) {
+    return res.status(400).send({
+      error: 'That is not valid todo ID.'
+    });
+  }
+  Todo.findOneAndRemove({
+    _id: todoID
+  }).then((todo) => {
+    if (!todo) {
+      return res.status(404).send('Couldn\'nt find that todo.');
+    }
+    var message = 'todo was removed';
+    res.status(200).send({
+      message,
+      todo
+    })
+  }).catch((e) => res.status(400).send())
+});
+
 
 app.listen(port, () => {
   console.log(`Started server on port ${port}`);
