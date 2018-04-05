@@ -1,3 +1,4 @@
+require('./config/config.js');
 const express = require('express');
 const bodyParser = require('body-parser');
 
@@ -28,7 +29,7 @@ const {
 
 
 var app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // parse request's json body into an object prior to passing
 // to route handler
