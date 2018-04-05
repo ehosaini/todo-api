@@ -4,22 +4,26 @@ const bodyParser = require('body-parser');
 
 // ES6 way of destructuring an object and creating a var
 // that matches an object property with similar a name
-var {
+const {
   mongoose
 } = require('./db/mongoose');
 
-var {
+const {
   Todo
 } = require('./models/todo');
 
-var {
+const {
   User
 } = require('./models/user');
 
 // mongodb driver utility
-var {
+const {
   ObjectID
 } = require('mongodb');
+
+const {
+  _
+} = require('lodash');
 
 
 
@@ -100,6 +104,42 @@ app.delete('/todos/:id', (req, res) => {
   }).catch((e) => res.status(400).send())
 });
 
+// UPDATE a todo
+app.patch('/todos/:id', (req, res) => {
+  var todoID = req.params.id;
+  var body = _.pick(req.body, ['text', 'completed']);
+
+  if (!ObjectID.isValid(todoID)) {
+    return res.status(400).send({
+      error: 'That is not valid todo ID.'
+    });
+  }
+
+  if (_.isBoolean(body.completed) && body.completed) {
+    body.completeAt = new Date().getTime();
+  } else {
+    body.completed = false;
+    body.completeAt = null;
+  }
+
+  Todo.findByIdAndUpdate(todoID, {
+    $set: body
+  }, {
+    new: true
+  }).then((todo) => {
+    if (!todo) {
+      res.status(404).send({
+        error: 'todo not found'
+      });
+    }
+
+    res.send({
+      todo
+    });
+  }).catch((e) => {
+    res.status(404).send();
+  })
+});
 
 app.listen(port, () => {
   console.log(`Started server on port ${port}`);
