@@ -17,7 +17,9 @@ const todos = [{
   text: 'first test todo'
 }, {
   _id: new ObjectID(),
-  text: 'second test todo'
+  text: 'second test todo',
+  completed: true,
+  completeAt: 5000
 }]
 
 // delete db entries before each testcase
@@ -160,3 +162,50 @@ describe('DELETE /todos/:id', () => {
       .end(done);
   })
 })
+
+describe('PATCH todos/:id', () => {
+
+
+  it('should update a todo as complete', (done) => {
+
+    var todoID = todos[0]._id.toHexString();
+
+    request(app)
+      .patch(`/todos/${todoID}`)
+      .send({
+        completed: true
+      })
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          return done(err)
+        }
+
+        Todo.findById(todoID).then((todo) => {
+          expect(todo.completed).toBe(true);
+          done();
+        });
+      });
+  });
+
+  it('should change todo status to false', (done) => {
+    var todoID = todos[1]._id.toHexString();
+
+    request(app)
+      .patch(`/todos/${todoID}`)
+      .send({
+        completed: false
+      })
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err)
+        }
+
+        Todo.findById(todoID).then((todo) => {
+          expect(todo.completed).toBe(false);
+          done();
+        });
+      })
+  })
+});

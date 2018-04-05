@@ -133,7 +133,7 @@ app.patch('/todos/:id', (req, res) => {
       });
     }
 
-    res.send({
+    res.status(200).send({
       todo
     });
   }).catch((e) => {
