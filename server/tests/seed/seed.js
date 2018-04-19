@@ -27,6 +27,7 @@ const todos = [{
 // dummy seed Users
 const userOneID = new ObjectID();
 const userTwoID = new ObjectID();
+const userThreeID = new ObjectID();
 
 const users = [{
     _id: userOneID,
@@ -44,6 +45,11 @@ const users = [{
     _id: userTwoID,
     email: 'testUser@gmail.com',
     password: 'somePassword',
+  },
+  {
+    _id: userThreeID,
+    email: 'user3@gmail.com',
+    password: 'user3Password',
   }
 ];
 
@@ -58,8 +64,10 @@ const populateUsers = (done) => {
   User.remove({}).then(() => {
     var userOne = new User(users[0]).save();
     var userTwo = new User(users[1]).save();
+    var userThree = new User(users[2]).save();
 
-    return Promise.all([userOne, userTwo]);
+    return Promise.all([userOne, userTwo, userThree]);
+    // return Promise.all([userTwo, userThree]);
 
   }).then(() => done());
 };

@@ -230,7 +230,7 @@ describe('GET /users/me', () => {
   });
 })
 
-describe('POST /usrs', () => {
+describe('POST /users', () => {
   it('should create a user', (done) => {
     var email = 'testUser@example.com';
     var password = '123qaz#'
@@ -287,6 +287,93 @@ describe('POST /usrs', () => {
       .post('/users')
       .send(duplicateUser)
       .expect(400)
+      .end(done);
+  });
+});
+
+// describe('POST /users/login', () => {
+//   it('should login user and return auth token', (done) => {
+//     var email = users[1].email;
+//     var password = users[1].password;
+//
+//     request(app)
+//       .post('/users/login')
+//       .send({
+//         email,
+//         password
+//       })
+//       .expect(200)
+//       .expect((res) => {
+//         expect(res.headers['x-auth']).toExist();
+//       })
+//       .end((err, res) => {
+//         if (err) {
+//           return done(err);
+//         }
+//
+//         User.findById(users[1]._id).then((user) => {
+//           expect(user.tokens[1]).toInclude({
+//             access: 'auth',
+//             token: res.headers['x-auth']
+//           });
+//           done()
+//         }).catch((e) => done(e));
+//       });
+//   });
+//
+//   it('should reject invalid login', (done) => {
+//     var invalidCredential = {
+//       email: users[1].email,
+//       password: users[1].password + 1
+//     }
+//
+//     request(app)
+//       .post('/users/login')
+//       .send(invalidCredential)
+//       .expect(400)
+//       .expect((res) => {
+//         expect(res.header['x-auth']).toNotExist();
+//       })
+//       .end((err, res) => {
+//         if (err) {
+//           return done(err);
+//         }
+//
+//         User.findById(users[1]._id).then((user) => {
+//           expect(user.tokens.length).toBe(0);
+//           done()
+//         }).catch((e) => done(e));
+//       });
+//   })
+// });
+
+describe('DELETE /users/me/token', () => {
+  it('should logout user and delete token', (done) => {
+    var token = users[0].tokens[0].token;
+    request(app)
+      .delete('/users/me/token')
+      .set('x-auth', token)
+      .expect(200)
+      .end((err, res) => {
+        if (err) {
+          done(err);
+        }
+
+        User.findById(users[0]._id).then((user) => {
+          expect(user.tokens.length).toBe(0);
+          done();
+        }).catch((e) => {
+          done(e);
+        });
+      })
+  });
+
+  it('should return Error if token is invalid', (done) => {
+    var token = users[0].tokens[0].token;
+    request(app)
+      .delete('/users/me/token')
+      .set('x-auth', token + 1)
+      .expect(401)
       .end(done);
   });
 })
