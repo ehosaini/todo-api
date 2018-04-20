@@ -34,11 +34,25 @@ const users = [{
     _id: userTwoID,
     email: 'testUser@gmail.com',
     password: 'somePassword',
+    tokens: [{
+      access: 'auth',
+      token: jwt.sign({
+        _id: userTwoID.toHexString(),
+        access: 'auth'
+      }, 'abc123').toString()
+    }]
   },
   {
     _id: userThreeID,
     email: 'user3@gmail.com',
     password: 'user3Password',
+    tokens: [{
+      access: 'auth',
+      token: jwt.sign({
+        _id: userThreeID.toHexString(),
+        access: 'auth'
+      }, 'abc123').toString()
+    }]
   }
 ];
 
