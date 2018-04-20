@@ -39,8 +39,10 @@ const port = process.env.PORT;
 app.use(bodyParser.json());
 
 // GET todos
-app.get('/todos', (req, res) => {
-  Todo.find().then((todos) => {
+app.get('/todos', authenticate, (req, res) => {
+  Todo.find({
+    _creator: req.user._id
+  }).then((todos) => {
     // ES6 syntax for {todos: todos}
     res.send({
       todos
@@ -73,9 +75,10 @@ app.get('/todos/:id', (req, res) => {
 });
 
 // POST todos
-app.post('/todos', (req, res) => {
+app.post('/todos', authenticate, (req, res) => {
   var todo = new Todo({
-    text: req.body.text
+    text: req.body.text,
+    _creator: req.user._id
   });
 
   todo.save().then((todo) => {

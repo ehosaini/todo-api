@@ -13,17 +13,6 @@ const {
 } = require('./../../models/user.js');
 
 
-// dummy seed Todos
-const todos = [{
-  _id: new ObjectID(),
-  text: 'first test todo'
-}, {
-  _id: new ObjectID(),
-  text: 'second test todo',
-  completed: true,
-  completeAt: 5000
-}];
-
 // dummy seed Users
 const userOneID = new ObjectID();
 const userTwoID = new ObjectID();
@@ -53,6 +42,18 @@ const users = [{
   }
 ];
 
+// dummy seed Todos
+const todos = [{
+  _id: new ObjectID(),
+  text: 'first test todo',
+  _creator: userOneID
+}, {
+  _id: new ObjectID(),
+  text: 'second test todo',
+  completed: true,
+  completeAt: 5000,
+  _creator: userTwoID
+}];
 
 const populateTodos = (done) => {
   Todo.remove({}).then(() => {

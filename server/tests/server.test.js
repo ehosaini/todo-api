@@ -28,11 +28,15 @@ beforeEach(populateTodos);
 describe('POST Todos', () => {
   it('should post a todo', (done) => {
     var text = 'Lets test this todo';
+    var user = users[0];
+    var token = user.tokens[0].token;
 
     request(app)
       .post('/todos')
+      .set('x-auth', token)
       .send({
-        text
+        text: text,
+        _creater: user._id
       })
       .expect(200)
       .expect((res) => {
@@ -54,11 +58,16 @@ describe('POST Todos', () => {
   });
 
   it('shouldn\'t post a todo with invalid body data', (done) => {
+    var text = 'Lets test this todo';
+    var user = users[0];
+    var token = user.tokens[0].token;
 
     request(app)
       .post('/todos')
+      .set('x-auth', token)
       .send({
-        text: ''
+        text: '',
+        _creater: user._id
       })
       .expect(400)
       .end((err, res) => {
@@ -76,11 +85,15 @@ describe('POST Todos', () => {
 
 describe('GET /todos', () => {
   it('should get all todos', (done) => {
+    var user = users[0];
+    var token = user.tokens[0].token;
+
     request(app)
       .get('/todos')
+      .set('x-auth', token)
       .expect(200)
       .expect((res) => {
-        expect(res.body.todos.length).toBe(2);
+        expect(res.body.todos.length).toBe(1);
       })
       .end(done);
   })
